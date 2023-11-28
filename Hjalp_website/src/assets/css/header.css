@@ -1,0 +1,45 @@
+header {
+    background-color: aqua;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 7vw;
+    display: inline-flex;
+}
+.leftNavDiv {
+    text-align: left;
+    background-color: pink;
+    width: 20%;
+    padding: 1vw;
+}
+.leftNavDivUp > h1 {
+    padding: 0;
+    margin: 0;
+    font-size: 2.5vw;
+}
+.leftNavDivDown > h2 {
+    padding: 0;
+    margin: 0;
+    font-size: 1.5vw;
+}
+.middleNavDiv {
+    width: 60%;
+    height: 100%;
+    background-color: blueviolet;
+}
+.rightNavDiv {
+    background-color: yellow;
+    width: 20%;
+    padding: 1vw;
+    display: inline-flex;
+}
+.rightNavDiv > img {
+    border-radius: 50%;
+    height: 80%;
+}
+.rightNavDiv > h4 {
+    background-color: aqua;
+    font-size: 1.5vw;
+    width: 70%;
+}
