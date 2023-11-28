@@ -7,7 +7,13 @@ function SideBar() {
   return (
     <>
       <div className="SideBar">
-        
+        <ul className="sideBarNav">
+            <li>Elever</li>
+            <li>Klassrum</li>
+            <li>Schema</li>
+            <li>Othmans Sexcave</li>
+        </ul>
+        <button className="sideBarBtn">Registrera närvaro</button>
       </div>
     </>
   );
