@@ -2,7 +2,8 @@
 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Header from "./header";
+import Header from "./Header";
+import SideBar from "./SideBar";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -22,6 +23,7 @@ function App() {
   return (
     <>
       <Header />
+      <SideBar />
       <div>
         <h1>User List</h1>
         <ul>
