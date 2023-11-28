@@ -55,7 +55,7 @@ app.post("/api/users", (req, res) => {
     res.status(400);
     return;
   }
-  insertDataQuery.run(req.name, req.klass);
+  insertDataQuery.run(req.body.name, req.body.klass);
 });
 
 app.listen(port, () => {
