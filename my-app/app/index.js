@@ -41,4 +41,13 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     padding: 4,
   },
+  input: {
+    fontSize: 24,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+    marginVertical: 16,
+    textAlign: "center",
+  },
 });
