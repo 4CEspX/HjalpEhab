@@ -2,15 +2,19 @@
 import placeholder_person from "./assets/images/placeholder_person.png";
 import "./assets/css/header.css";
 
-function App() {
-//   const [count, setCount] = useState(0);
+function Header() {
+  //   const [count, setCount] = useState(0);
 
   return (
     <>
       <header>
         <div className="leftNavDiv">
-          <div className="leftNavDivUp"><h1>NTI Gymnasiet</h1></div>
-          <div className="leftNavDivDown"><h2>Personal</h2></div>
+          <div className="leftNavDivUp">
+            <h1>NTI Gymnasiet</h1>
+          </div>
+          <div className="leftNavDivDown">
+            <h2>Personal</h2>
+          </div>
         </div>
         <div className="middleNavDiv"></div>
         <div className="rightNavDiv">
@@ -22,4 +26,4 @@ function App() {
   );
 }
 
-export default App;
+export default Header;
