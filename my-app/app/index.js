@@ -5,14 +5,15 @@ export default function Page() {
     <View style={styles.container}>
       <View style={styles.main}>
         <Text style={styles.title}>Welcome!</Text>
-        <Text style={styles.subtitle}>This is da attandence checker</Text>
-        <Link href="/LoginScreen">go to scanner</Link>
+        <Text style={styles.subtitle}>This is the attandence checker</Text>
+        
+        <Link style={styles.link} href="/LoginScreen">Login</Link>
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
@@ -33,5 +34,11 @@ const styles = StyleSheet.create({
     fontSize: 36,
     color: "#38434D",
     textAlign: "center",
+  },
+  link: {
+    fontSize: 24,
+    color: "#0070f3",
+    textAlign: "center",
+    padding: 4,
   },
 });
