@@ -12,6 +12,7 @@ app.use(cors());
 
 const db = new Database('./database.db');
 
+
 const prepareCache = new Map();
 const prepare = (query) => {
   if (prepareCache.has(query)) {
