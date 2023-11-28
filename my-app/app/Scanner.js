@@ -29,21 +29,27 @@ function Scanner() {
      
       
       const TagData = {
-        id: tag.id,
+        name: "test",
+        klass: "TE5",
       
       };
 
       if (tag.id === classID) {
       
-        console.warn("Welcome!", tag.id);
+        console.warn("Welcome!", tag.name);
 
-        const response = await fetch("http://192.168.220.145:3000/api/users", {
+        const response = await fetch("http://192.168.220.50:3000/api/users", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
   },
   body: JSON.stringify(TagData)
 });
+if (response.ok) {
+  console.log("Fetch request was successful");
+  const text = await response.text();
+  console.log(text);
+}
 
 if (response.status !== 200) {
   console.error("Error status:", response.status);
