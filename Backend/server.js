@@ -1,5 +1,6 @@
 // Backend/server.js
 
+import cors from "cors";
 import express from "express";
 
 import Database from 'better-sqlite3';
@@ -7,7 +8,7 @@ import Database from 'better-sqlite3';
 const app = express();
 const port = 3000;
 
-// app.use(cors());
+app.use(cors());
 
 const db = new Database('./database.db');
 
@@ -28,8 +29,8 @@ const setupProductsTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    email TEXT NOT NULL
-
+    klass TEXT NOT NULL,
+    timestamp DATETIME NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP, 'localtime'))
 )
 `);
 
@@ -42,9 +43,9 @@ app.get('/api/users', (req, res) => {
 });
 
 app.listen(port, () => {
+const insertDataQuery = db.prepare('INSERT INTO users (name, klass) VALUES (?, ?)');
+insertDataQuery.run('jane_doe', 'jane@example.com');
   console.log(`Server is running on port ${port}`);
 });
 
-// const insertDataQuery = db.prepare('INSERT INTO users (username, email) VALUES (?, ?)');
-// insertDataQuery.run('jane_doe', 'jane@example.com');
 
