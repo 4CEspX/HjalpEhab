@@ -20,14 +20,19 @@ const LoginScreen = () => {
     };
 
     // Send a POST request to the server
-    fetch("http://192.168.220.50:3000/api/info", {
+    fetch("http://192.168.220.50:3000/api/login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(requestBody)
     })
-      .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
       .then(data => {
         if (data.success) {
           // Login successful, perform any necessary actions
