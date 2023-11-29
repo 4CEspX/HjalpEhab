@@ -27,7 +27,16 @@ const prepare = (query) => {
   return stmt;
 };
 
-const setupProductsTable = db.prepare(`
+const setupInfoTable = db.prepare(`
+CREATE TABLE IF NOT EXISTS info (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    password TEXT NOT NULL,
+    isAdmin BOOLEAN NOT NULL
+)
+`);
+
+const setupUserTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -36,7 +45,8 @@ CREATE TABLE IF NOT EXISTS users (
 )
 `);
 
-setupProductsTable.run();
+setupInfoTable.run();
+setupUserTable.run();
 
 app.get("/api/users", (req, res) => {
   const query = db.prepare("SELECT * FROM users");
@@ -49,6 +59,26 @@ app.post("/api/users", (req, res) => {
   res.json("Great success");
   const insertDataQuery = prepare(
     "INSERT INTO users (name, klass) VALUES (?, ?)"
+  );
+  if (!req.body.name || !req.body.klass)
+  {
+    res.status(400);
+    return;
+  }
+  insertDataQuery.run(req.body.name, req.body.klass);
+});
+
+app.get("/api/info", (req, res) => {
+  const query = db.prepare("SELECT * FROM info");
+  const users = query.all();
+  res.json(users);
+});
+
+app.post("/api/info", (req, res) => {
+  console.log(req.body);
+  res.json("Great success");
+  const insertDataQuery = prepare(
+    "INSERT INTO users (name, password) VALUES (?, ?)"
   );
   if (!req.body.name || !req.body.klass)
   {
