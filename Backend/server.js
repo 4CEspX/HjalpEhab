@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS info (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     password TEXT NOT NULL,
-    isAdmin BOOLEAN NOT NULL
+    isAdmin BOOLEAN DEFAULT 0
 )
 `);
 
@@ -53,8 +53,6 @@ app.get("/api/users", (req, res) => {
   const query = db.prepare("SELECT * FROM users");
   const users = query.all();
   res.json(users);
-  console.log('Cookies: ', req.cookies);
-  console.log('Signed Cookies: ', req.signedCookies);
 });
 
 app.post("/api/users", (req, res) => {
@@ -73,28 +71,29 @@ app.post("/api/users", (req, res) => {
   console.log('Signed Cookies: ', req.signedCookies);
 });
 
+
+
+
 app.get("/api/info", (req, res) => {
   const query = db.prepare("SELECT * FROM info");
-  const users = query.all();
-  res.json(users);
-  console.log('Cookies: ', req.cookies);
-  console.log('Signed Cookies: ', req.signedCookies);
+  const info = query.all();
+  res.json(info);
 });
 
 app.post("/api/info", (req, res) => {
   console.log(req.body);
-  res.json("Great success");
-  const insertDataQuery = prepare(
-    "INSERT INTO users (name, password) VALUES (?, ?)"
-  );
-  if (!req.body.name || !req.body.klass)
-  {
-    res.status(400);
+  if (!req.body.name || !req.body.password) {
+    res.status(400).send("Name and password are required");
     return;
   }
-  insertDataQuery.run(req.body.name, req.body.klass);
+  
+  const insertDataQuery = db.prepare("INSERT INTO info (name, password, isAdmin) VALUES (?, ?, ?)");
+  insertDataQuery.run(req.body.name, req.body.password, req.body.isAdmin);
+  
   console.log('Cookies: ', req.cookies);
   console.log('Signed Cookies: ', req.signedCookies);
+  
+  res.json("Great success");
 });
 
 app.listen(port, () => {
