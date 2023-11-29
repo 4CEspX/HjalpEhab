@@ -5,6 +5,15 @@
   text-align: center;
 }
 
+.appContainer {
+  position: absolute;
+  text-align: left;
+  margin-left: calc(20% + 2vw);
+  width: calc(80% - 2vw);
+  left: 0%;
+  text-align: center;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
