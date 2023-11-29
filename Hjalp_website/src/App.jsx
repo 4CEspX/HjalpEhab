@@ -15,6 +15,7 @@ function App() {
       .get("http://192.168.220.50:3000/api/users")
       .then((response) => {
         setUsers(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -44,6 +45,13 @@ function App() {
             {info.map((a) => (
               <li key={a.id}>
                 {a.name} - {a.klass} - {a.password}
+              </li>
+            ))}
+          </ul>
+          <ul>
+            {users.map((b) => (
+              <li key={b.id}>
+                {b.name} - {b.klass} - {b.timestamp}
               </li>
             ))}
           </ul>
