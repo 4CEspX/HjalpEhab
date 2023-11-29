@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS info (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     password TEXT NOT NULL,
-    klass TEXT NOT NULL,
+    klass TEXT,
     isAdmin BOOLEAN DEFAULT 0
 )
 `);
@@ -42,7 +42,7 @@ const setupUserTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    klass TEXT NOT NULL,
+    klass TEXT,
     timestamp DATETIME NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP, 'localtime'))
 )
 `);
