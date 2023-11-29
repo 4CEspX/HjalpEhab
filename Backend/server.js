@@ -84,12 +84,12 @@ app.get("/api/info", (req, res) => {
 app.post("/api/info", (req, res) => {
   console.log(req.body);
   if (!req.body.name || !req.body.password) {
-    res.status(400).send("Name and password are required");
+    res.status(400).send("Name, password and class are required!");
     return;
   }
   
-  const insertDataQuery = db.prepare("INSERT INTO info (name, password, isAdmin) VALUES (?, ?, ?)");
-  insertDataQuery.run(req.body.name, req.body.password, req.body.isAdmin);
+  const insertDataQuery = db.prepare("INSERT INTO info (name, password, klass, isAdmin) VALUES (?, ?, ?, ?)");
+  insertDataQuery.run(req.body.name, req.body.password, req.body.klass, req.body.isAdmin);
   
   console.log('Cookies: ', req.cookies);
   console.log('Signed Cookies: ', req.signedCookies);
