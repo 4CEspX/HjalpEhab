@@ -69,6 +69,8 @@ app.post("/api/users", (req, res) => {
     return;
   }
   insertDataQuery.run(req.body.name, req.body.klass);
+  console.log('Cookies: ', req.cookies);
+  console.log('Signed Cookies: ', req.signedCookies);
 });
 
 app.get("/api/info", (req, res) => {
@@ -91,6 +93,8 @@ app.post("/api/info", (req, res) => {
     return;
   }
   insertDataQuery.run(req.body.name, req.body.klass);
+  console.log('Cookies: ', req.cookies);
+  console.log('Signed Cookies: ', req.signedCookies);
 });
 
 app.listen(port, () => {
