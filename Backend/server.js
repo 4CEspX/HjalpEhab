@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS info (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     password TEXT NOT NULL,
+    klass TEXT NOT NULL,
     isAdmin BOOLEAN DEFAULT 0
 )
 `);

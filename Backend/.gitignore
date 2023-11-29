@@ -19,4 +19,4 @@ yarn-error.*
 *.tsbuildinfo
 
 #database
-.db
+*.db
