@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom"; // Import BrowserRouter
 import Header from "./Header";
 import SideBar from "./SideBar";
+import "./App.css";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -26,7 +27,7 @@ function App() {
       <>
         <Header />
         <SideBar />
-        <div>
+        <div className="appContainer">
           <h1>User List</h1>
           <ul>
             {users.map((user) => (

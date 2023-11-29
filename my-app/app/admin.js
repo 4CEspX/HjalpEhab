@@ -1,26 +1,23 @@
-// HomeScreen.js
-import React, { useState } from "react";
-import { View, Text, TextInput, Button} from 'react-native';
-import { Link } from 'expo-router';
-
+import { Link } from "expo-router";
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Button } from "react-native";
+import NfcManager, { NfcTech } from "react-native-nfc-manager";
 import { styles } from './index';
+import { useState } from "react";
 
-
-
-const LoginScreen = () => {
+const admin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = () => {
+  const handleSignup = () => {
     // Create a request body with the user's credentials
     const requestBody = {
-    name: username,
-     password: password
+      name: username,
+      password: password
     };
 
     // Send a POST request to the server
-    fetch("http://192.168.220.50:3000/api/info", {
+    fetch("http://192.168.220.50:3000/api/info", { // Change this to your signup endpoint
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -30,11 +27,11 @@ const LoginScreen = () => {
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          // Login successful, perform any necessary actions
-          console.log('Login successful');
+          // Account creation successful, perform any necessary actions
+          console.log('Account created successfully');
         } else {
-          // Login failed, display error message
-          setError('Invalid username or password');
+          // Account creation failed, display error message
+          setError('Failed to create account');
         }
       })
       .catch(error => {
@@ -43,12 +40,10 @@ const LoginScreen = () => {
       });
   };
 
-
-
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Text style={styles.title}>Login</Text>
+        <Text style={styles.title}>Sign Up</Text>
         <TextInput
           style={styles.input}
           placeholder="Username"
@@ -59,16 +54,14 @@ const LoginScreen = () => {
           style={styles.input}
           placeholder="Password"
           secureTextEntry
-          //value={password}
           onChangeText={setPassword}
         />
-        <Button title="Login" onPress={handleLogin} />
+        <Button title="Sign Up" onPress={handleSignup} />
         {error ? <Text style={styles.error}>{error}</Text> : null}
-        <Link  style={styles.link} href="Scanner">go to scanner</Link>
-    
+        <Link style={styles.link} href="Scanner">go to scanner</Link>
       </View>
     </View>
   );
 };
 
-export default LoginScreen;
+export default admin;
