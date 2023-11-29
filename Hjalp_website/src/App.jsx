@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom"; // Import BrowserRouter
+import "./App.css";
 import Header from "./Header";
 import SideBar from "./SideBar";
-import "./App.css";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -22,8 +22,9 @@ function App() {
 
     axios
       .get("http://192.168.220.50:3000/api/info")
-      .then((response) => {
-        setInfo(response.data);
+      .then((res) => {
+        setInfo(res.data);
+        console.log(res.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -40,10 +41,9 @@ function App() {
         <div className="appContainer">
           <h1>User List</h1>
           <ul>
-            {users.map((user) => (
-              <li key={user.id}>
-                {user.name} - {user.klass} - {user.timestamp}
-                {info.name} - {info.klass} - {info.password}
+            {info.map((a) => (
+              <li key={a.id}>
+                {a.name} - {a.klass} - {a.password}
               </li>
             ))}
           </ul>
