@@ -8,6 +8,7 @@ export default function Page() {
         <Text style={styles.subtitle}>This is the attandence checker</Text>
         
         <Link style={styles.link} href="/LoginScreen">Login</Link>
+        <Link style={styles.link} href="/admin">admin</Link>
       </View>
     </View>
   );
