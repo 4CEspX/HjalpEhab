@@ -1,7 +1,6 @@
-// Hjalp_website/src/App.js
-
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router } from "react-router-dom"; // Import BrowserRouter
 import Header from "./Header";
 import SideBar from "./SideBar";
 
@@ -21,20 +20,24 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Header />
-      <SideBar />
-      <div>
-        <h1>User List</h1>
-        <ul>
-          {users.map((user) => (
-            <li key={user.id}>
-              {user.name} - {user.klass} - {user.timestamp}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </>
+    <Router>
+      {" "}
+      {/* Wrap your App with BrowserRouter */}
+      <>
+        <Header />
+        <SideBar />
+        <div>
+          <h1>User List</h1>
+          <ul>
+            {users.map((user) => (
+              <li key={user.id}>
+                {user.name} - {user.klass} - {user.timestamp}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </>
+    </Router>
   );
 }
 
