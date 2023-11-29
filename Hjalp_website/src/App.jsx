@@ -7,6 +7,7 @@ import "./App.css";
 
 function App() {
   const [users, setUsers] = useState([]);
+  const [info, setInfo] = useState([]);
 
   useEffect(() => {
     // Make a GET request to the server API
@@ -14,6 +15,15 @@ function App() {
       .get("http://192.168.220.50:3000/api/users")
       .then((response) => {
         setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+
+    axios
+      .get("http://192.168.220.50:3000/api/info")
+      .then((response) => {
+        setInfo(response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -33,6 +43,7 @@ function App() {
             {users.map((user) => (
               <li key={user.id}>
                 {user.name} - {user.klass} - {user.timestamp}
+                {info.name} - {info.klass} - {info.password}
               </li>
             ))}
           </ul>
