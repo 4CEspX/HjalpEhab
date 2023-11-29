@@ -5,15 +5,16 @@ import express from "express";
 
 import Database from "better-sqlite3";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 const db = new Database("./database.db");
-
 
 
 const prepareCache = new Map();
@@ -52,6 +53,8 @@ app.get("/api/users", (req, res) => {
   const query = db.prepare("SELECT * FROM users");
   const users = query.all();
   res.json(users);
+  console.log('Cookies: ', req.cookies);
+  console.log('Signed Cookies: ', req.signedCookies);
 });
 
 app.post("/api/users", (req, res) => {
@@ -72,6 +75,8 @@ app.get("/api/info", (req, res) => {
   const query = db.prepare("SELECT * FROM info");
   const users = query.all();
   res.json(users);
+  console.log('Cookies: ', req.cookies);
+  console.log('Signed Cookies: ', req.signedCookies);
 });
 
 app.post("/api/info", (req, res) => {
