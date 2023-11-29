@@ -18,8 +18,10 @@ function Header() {
         </div>
         <div className="middleNavDiv"></div>
         <div className="rightNavDiv">
-          <img src={placeholder_person} alt="Person photo" />
-          <h4>Admin Admin</h4>
+          <div>
+            <img src={placeholder_person} alt="Person photo" />
+            <h4>Admin Admin</h4>
+          </div>
         </div>
       </header>
     </>

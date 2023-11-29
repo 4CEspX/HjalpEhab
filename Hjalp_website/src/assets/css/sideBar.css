@@ -29,5 +29,10 @@
 }
 .sideBarNav > li:hover {
   background-color: rgb(255, 255, 255);
+}
+.sideBarNav > li > :first-child {
+  color: rgb(255, 255, 255);
+}
+.sideBarNav > li:hover > :first-child {
   color: rgb(177, 6, 140);
 }

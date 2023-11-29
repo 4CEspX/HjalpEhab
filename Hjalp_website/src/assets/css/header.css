@@ -4,7 +4,7 @@ header {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 7vw;
   display: inline-flex;
 }
@@ -36,13 +36,27 @@ header {
   padding: 1vw;
   display: inline-flex;
 }
-.rightNavDiv > img {
+.rightNavDiv > div {
+  position: relative;
+  border-radius: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  width: 90%;
+  height: 100%;
+  transition: all 100ms ease-in-out;
+}
+.rightNavDiv > div:hover {
+  background-color: rgb(240, 240, 240);
+  margin-top: 2px;
+}
+.rightNavDiv > div > img {
   border: 3px solid rgb(0, 0, 0);
   border-radius: 50%;
   height: 60%;
 }
-.rightNavDiv > h4 {
-  margin-left: 0.5vw;
+.rightNavDiv > div > h4 {
   font-size: 1.5vw;
   width: 70%;
 }

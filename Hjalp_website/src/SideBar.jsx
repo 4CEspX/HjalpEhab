@@ -6,11 +6,18 @@ function SideBar() {
   return (
     <div className="SideBar">
       <ul className="sideBarNav">
-        <li>Elever</li>
-        <li>Klassrum</li>
-        <li>Schema</li>
-        <li>Othmans Sexcave</li>
-
+        <li>
+          <Link to="/">Elever</Link>
+        </li>
+        <li>
+          <Link to="/">Klasser</Link>
+        </li>
+        <li>
+          <Link to="/">Schema</Link>
+        </li>
+        <li>
+          <Link to="/">Othmans sexcave</Link>
+        </li>
         {/* Link wraps the list item */}
         <li>
           <Link to="/">Registrera närvaro</Link>

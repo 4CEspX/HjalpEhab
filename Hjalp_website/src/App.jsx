@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     // Make a GET request to the server API
     axios
-      .get("http://localhost:3000/api/users")
+      .get("http://192.168.220.50:3000/api/users")
       .then((response) => {
         setUsers(response.data);
       })
