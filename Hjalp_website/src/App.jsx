@@ -41,13 +41,26 @@ function App() {
         <SideBar />
         <div className="appContainer">
           <h1>User List</h1>
-          <ul>
-            {info.map((a) => (
-              <li key={a.id}>
-                {a.name} - {a.klass} - {a.password}
-              </li>
+          <table className="studentInfo">
+            <tr>
+              <th>Namn:</th>
+              <th>Klass:</th>
+              <th>Lösenord:</th>
+            </tr>
+            {info.map((info) => (
+              <tr key={info.id}>
+                <td>
+                  <p>{info.name}</p>
+                </td>
+                <td>
+                  <p>{info.klass}</p>
+                </td>
+                <td>
+                  <p>{info.password}</p>
+                </td>
+              </tr>
             ))}
-          </ul>
+          </table>
           <ul>
             {users.map((b) => (
               <li key={b.id}>
