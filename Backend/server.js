@@ -28,27 +28,86 @@ const prepare = (query) => {
   return stmt;
 };
 
-const setupInfoTable = db.prepare(`
-CREATE TABLE IF NOT EXISTS info (
+const setupRolesTable = db.prepare(`
+CREATE TABLE IF NOT EXISTS roles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    password TEXT NOT NULL,
-    klass TEXT,
-    isAdmin BOOLEAN DEFAULT 0
+    role TEXT
 )
 `);
 
-const setupUserTable = db.prepare(`
+setupRolesTable.run();
+
+
+const setupUsersTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    klass TEXT,
-    timestamp DATETIME NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP, 'localtime'))
+    username TEXT,
+    password TEXT,
+    role INTEGER NOT NULL,
+    class_id INTEGER NOT NULL,
+    FOREIGN KEY(role) REFERENCES roles(role),
+    FOREIGN KEY(class_id) REFERENCES classes(id)
 )
 `);
 
-setupInfoTable.run();
-setupUserTable.run();
+setupUsersTable.run();
+
+
+const setupClassesTable = db.prepare(`
+CREATE TABLE IF NOT EXISTS classes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT
+)
+`);
+
+setupClassesTable.run();
+
+
+const setupRoomTable = db.prepare(`
+CREATE TABLE IF NOT EXISTS room (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT
+)
+`);
+
+setupRoomTable.run();
+
+
+const setupTagsTable = db.prepare(`
+CREATE TABLE IF NOT EXISTS tags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tag_id TEXT
+)
+`);
+
+setupTagsTable.run();
+
+
+const setupLecturesTable = db.prepare(`
+CREATE TABLE IF NOT EXISTS lectures (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    day INTEGER,
+    start_time TIME,
+    end_time TIME
+)
+`);
+
+setupLecturesTable.run();
+
+
+const setupUsersLecturesTable = db.prepare(`
+CREATE TABLE IF NOT EXISTS users_lectures (
+    user_id INTEGER NOT NULL,
+    lecture_id INTEGER NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(lecture_id) REFERENCES lectures(id)
+)
+`);
+
+setupUsersLecturesTable.run();
+
+
+
 
 app.get("/api/users", (req, res) => {
   const query = db.prepare("SELECT * FROM users");
@@ -97,6 +156,24 @@ app.post("/api/info", (req, res) => {
   res.json("Great success");
 });
 
+
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required" });
+  }
+
+  const query = db.prepare("SELECT name FROM info WHERE name = ? AND password = ?");
+  const user = query.get(username, password);
+
+  if (user) {
+    res.json({ message: "Login successful" });
+  } else {
+    res.status(401).json({ message: "Login failed: Invalid username or password" });
+  }
+});
+
 app.listen(port, () => {
   
   console.log(`Server is running on port ${port}`);
@@ -105,3 +182,4 @@ app.listen(port, () => {
 app.use(function (req, res) {
   res.status(404);
 });
+
