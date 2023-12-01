@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
-
+import { styles } from "./index";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 // Pre-step, call this before any NFC operations
 NfcManager.start();
 
@@ -9,7 +10,7 @@ function Scanner() {
   const [isPressed, setIsPressed] = useState(false);
   const [info, setInfo] = useState(null);
 
-  const classID = "2997B6E4";
+  const tagID = classID ;
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -78,7 +79,13 @@ if (response.status !== 200) {
   }
 
   return (
+
+
     <View style={styles.wrapper}>
+
+   
+      <Text style={styles.title2}>Scan a Tag</Text>
+
       <TouchableOpacity
         style={[Butt.wrapper, isPressed ? Butt.pressed : null]}
         onPressIn={handlePressIn}
@@ -98,30 +105,25 @@ if (response.status !== 200) {
         </View>
       )}
     </View>
+   
   );
 }
 const Butt = StyleSheet.create({
   wrapper: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#DDDDDD",
     padding: 10,
-    borderRadius: 5,
+    borderWidth: 1,
+    borderRadius:10,
     borderColor: "#000000",
     marginBottom: 20,
   },
   pressed: {
-    backgroundColor: "#301934",
+    backgroundColor: "#47315a",
 
     opacity: 0.5,
   },
 });
 
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-  },
-});
+
 
 export default Scanner;
