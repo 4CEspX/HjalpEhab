@@ -272,7 +272,7 @@ app.post("/api/login", (req, res) => {
   }
   const isPasswordMatch = verifyPassword(hashedPassword, req.body.password);
   if (isPasswordMatch) {
-    res.status(400).json({ error: "Password is correct" });
+    res.status(200).json({ error: "Password is correct" });
     console.log("Password is correct");
   } else {
     console.log("Password is incorrect");
