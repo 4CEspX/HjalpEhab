@@ -134,45 +134,27 @@ app.post("/api/users", (req, res) => {
 
 
 
-app.get("/api/info", (req, res) => {
-  const query = db.prepare("SELECT * FROM info");
-  const info = query.all();
-  res.json(info);
-});
+// app.get("/api/info", (req, res) => {
+//   const query = db.prepare("SELECT * FROM info");
+//   const info = query.all();
+//   res.json(info);
+// });
 
-app.post("/api/info", (req, res) => {
-  console.log(req.body);
-  if (!req.body.name || !req.body.password) {
-    res.status(400).send("Name, password and class are required!");
-    return;
-  }
+// app.post("/api/info", (req, res) => {
+//   console.log(req.body);
+//   if (!req.body.name || !req.body.password) {
+//     res.status(400).send("Name, password and class are required!");
+//     return;
+//   }
   
-  const insertDataQuery = db.prepare("INSERT INTO info (name, password, klass, isAdmin) VALUES (?, ?, ?, ?)");
-  insertDataQuery.run(req.body.name, req.body.password, req.body.klass, req.body.isAdmin);
+//   const insertDataQuery = db.prepare("INSERT INTO info (name, password, klass, isAdmin) VALUES (?, ?, ?, ?)");
+//   insertDataQuery.run(req.body.name, req.body.password, req.body.klass, req.body.isAdmin);
   
-  console.log('Cookies: ', req.cookies);
-  console.log('Signed Cookies: ', req.signedCookies);
+//   console.log('Cookies: ', req.cookies);
+//   console.log('Signed Cookies: ', req.signedCookies);
   
-  res.json("Great success");
-});
-
-
-app.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ message: "Username and password are required" });
-  }
-
-  const query = db.prepare("SELECT name FROM info WHERE name = ? AND password = ?");
-  const user = query.get(username, password);
-
-  if (user) {
-    res.json({ message: "Login successful" });
-  } else {
-    res.status(401).json({ message: "Login failed: Invalid username or password" });
-  }
-});
+//   res.json("Great success");
+// });
 
 app.listen(port, () => {
   
