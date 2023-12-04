@@ -15,6 +15,12 @@ export default function Page() {
 }
 
 export const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+  },
   container: {
     flex: 1,
     alignItems: "center",
@@ -30,6 +36,13 @@ export const styles = StyleSheet.create({
     fontSize: 64,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  title2: {
+    fontSize: 54,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#123456",
+    paddingBottom: 48,
   },
   subtitle: {
     fontSize: 36,
