@@ -36,20 +36,25 @@
   width: 80%;
 }
 
-.studentInfo td, #customers th {
+.studentInfo td,
+#customers th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-.studentInfo tr:nth-child(even){background-color: #f2f2f2;}
+.studentInfo tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
-.studentInfo tr:hover {background-color: #ddd;}
+.studentInfo tr:hover {
+  background-color: #ddd;
+}
 
 .studentInfo th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #04AA6D;
+  background-color: #04aa6d;
   color: white;
 }
 
