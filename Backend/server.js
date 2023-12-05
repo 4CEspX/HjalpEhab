@@ -210,15 +210,41 @@ app.post("/api/room", (req, res) => {
 
 // Tags
 app.post("/api/tags", (req, res) => {
+  console.log(req.body);
   const insertDataQuery = prepare(
     "INSERT INTO tags (tag_id, room_id) VALUES (?, ?)"
   );
-  if (!req.body.tag_id || !req.body.room_id) {
+  const checkRoomQuery = prepare("SELECT id FROM room WHERE name = ?");
+  const checkTagsQuery = prepare("SELECT tag_id FROM tags WHERE tag_id = ?");
+  const DelTagsQuery = prepare("DELETE FROM tags WHERE tag_id = ?");
+  const checkRoomsQuery = prepare("SELECT name FROM room WHERE name = ?");
+
+  if (!req.body.tag_id || !req.body.room) {
     res.status(400).json({ error: "Incomplete data" });
+    console.log("Incomplete data!");
     return;
   }
-  insertDataQuery.run(req.body.tag_id, req.body.room_id);
-  res.json("Tag data inserted successfully");
+
+  const tagId = req.body.tag_id;
+  const room = req.body.room;
+  const roomId = checkRoomQuery.get(room);
+
+  const tag = checkTagsQuery.get(req.body.tag_id);
+
+  if (checkRoomsQuery.get(req.body.room) == null)
+  {
+    res.status(409).json("Room does not exist!");
+    console.log("Room does not exist!");
+    return;
+  }
+
+  if (tag == null) {
+    insertDataQuery.run(tagId, roomId.id);
+    res.json("Tag data inserted successfully");
+  } else {
+    DelTagsQuery.run(tagId);
+    insertDataQuery.run(tagId, roomId.id)
+  }
 });
 
 // Lectures
@@ -265,9 +291,7 @@ app.post("/api/login", (req, res) => {
   const checkPasswordQuery = prepare(
     "SELECT password FROM users WHERE username = ?"
   );
-  const checkRoleQuery = prepare(
-    "SELECT role FROM users WHERE username = ?"
-  );
+  const checkRoleQuery = prepare("SELECT role FROM users WHERE username = ?");
   if (!req.body.username || !req.body.password) {
     res.status(400).json({ error: "Incomplete data" });
     return;
