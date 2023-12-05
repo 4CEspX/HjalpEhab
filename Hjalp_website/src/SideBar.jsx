@@ -10,17 +10,14 @@ function SideBar() {
           <Link to="/students">Elever</Link>
         </li>
         <li>
-          <Link to="/">Klasser</Link>
+          <Link to="/api">Klasser</Link>
         </li>
         <li>
           <Link to="/">Schema</Link>
         </li>
-        <li>
-          <Link to="/">Othmans sexcave</Link>
-        </li>
         {/* Link wraps the list item */}
         <li>
-          <Link to="/">Registrera närvaro</Link>
+          <Link to="/attendence">Registrera närvaro</Link>
         </li>
       </ul>
     </div>
