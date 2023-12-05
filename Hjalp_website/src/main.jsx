@@ -6,6 +6,7 @@ import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import Header from "./Header";
 import SideBar from "./SideBar";
+import Students from "./assets/components/students.jsx";
 
 const Wrapper = () => (
   <>
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <App />,
+      },
+      {
+        path: "/students",
+        element: <Students />,
       },
     ],
   },

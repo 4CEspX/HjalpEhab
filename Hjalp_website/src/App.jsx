@@ -7,7 +7,6 @@ function App() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    console.log("Helloooooooooooo!");
     // Make a GET request to the server API
     axios
       .get("http://192.168.220.50:3000/api/users")
@@ -19,7 +18,6 @@ function App() {
         console.error("Error fetching data:", error);
       });
   }, []);
-  console.log("yes");
   return (
     <>
       <div className="appContainer">

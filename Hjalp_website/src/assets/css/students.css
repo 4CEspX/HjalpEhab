@@ -1,0 +1,52 @@
+.studentsContainer {
+  background-color: aqua;
+  background-color: rgb(255, 255, 255);
+  position: absolute;
+  text-align: left;
+  margin-left: calc(20% + 2vw);
+  width: calc(80% - 2vw);
+  left: 0%;
+  text-align: center;
+  margin-top: -16.05vw;
+}
+.studentInfo {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  margin: auto;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(0, 0, 0);
+}
+
+.studentInfo td,
+#customers th {
+  border: none;
+  border-bottom: 2px solid rgb(0, 0, 0);
+  padding: 1vw;
+}
+
+.studentInfo td > span {
+    display: block;
+    height: 2vw; /* Set the desired height */
+    width: 2vw; /* Set the desired width */
+    border-radius: 100%;
+    background-color: rgb(255, 0, 0);
+    text-align: center;
+    margin: auto;
+}
+
+.studentInfo tr:nth-child(even) {
+  background-color: rgb(255, 255, 255);
+}
+
+.studentInfo tr:hover {
+  background-color: #ddd;
+}
+
+.studentInfo th {
+  padding: 1vw;
+  text-transform: uppercase;
+  text-align: center;
+  background-color: rgb(177, 6, 140);
+  color: white;
+}

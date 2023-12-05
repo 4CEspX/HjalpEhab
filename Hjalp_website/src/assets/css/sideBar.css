@@ -2,6 +2,7 @@
   background-color: rgb(177, 6, 140);
   height: calc(100vh - 7vw);
   position: absolute;
+  position: fixed;
   margin-top: 7vw;
   width: 20%;
   top: 0;

@@ -7,7 +7,7 @@ function SideBar() {
     <div className="SideBar">
       <ul className="sideBarNav">
         <li>
-          <Link to="/">Elever</Link>
+          <Link to="/students">Elever</Link>
         </li>
         <li>
           <Link to="/">Klasser</Link>
