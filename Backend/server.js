@@ -7,6 +7,8 @@ import Database from "better-sqlite3";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
+import argon2 from "argon2";
+
 const app = express();
 const port = 3000;
 
@@ -16,6 +18,29 @@ app.use(cookieParser());
 
 const db = new Database("./database.db");
 
+// Hashing the password
+const hashPassword = async (password) => {
+  try {
+    const hash = await argon2.hash(password, { type: argon2.argon2id });
+    return hash;
+  } catch (error) {
+    // Handle hashing error
+    console.error("Error hashing password:", error.message);
+    throw error;
+  }
+};
+
+// Verifying the password
+const verifyPassword = async (hashedPassword, password) => {
+  try {
+    const isMatch = await argon2.verify(hashedPassword, password);
+    return isMatch;
+  } catch (error) {
+    // Handle verification error
+    console.error("Error verifying password:", error.message);
+    throw error;
+  }
+};
 
 const prepareCache = new Map();
 const prepare = (query) => {
@@ -37,21 +62,17 @@ CREATE TABLE IF NOT EXISTS roles (
 
 setupRolesTable.run();
 
-
 const setupUsersTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
+    username TEXT UNIQUE,
     password TEXT,
     role INTEGER NOT NULL,
-    class_id INTEGER NOT NULL,
-    FOREIGN KEY(role) REFERENCES roles(role),
-    FOREIGN KEY(class_id) REFERENCES classes(id)
+    class_id TEXT
 )
 `);
 
 setupUsersTable.run();
-
 
 const setupClassesTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS classes (
@@ -62,7 +83,6 @@ CREATE TABLE IF NOT EXISTS classes (
 
 setupClassesTable.run();
 
-
 const setupRoomTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS room (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,96 +92,204 @@ CREATE TABLE IF NOT EXISTS room (
 
 setupRoomTable.run();
 
-
 const setupTagsTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS tags (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    tag_id TEXT
+    tag_id TEXT,
+    room_id INTEGER NOT NULL
 )
 `);
 
 setupTagsTable.run();
-
 
 const setupLecturesTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS lectures (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     day INTEGER,
     start_time TIME,
-    end_time TIME
+    end_time TIME,
+    teacher_id TEXT NOT NULL,
+    room_id INTEGER NOT NULL
 )
 `);
 
 setupLecturesTable.run();
 
-
 const setupUsersLecturesTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS users_lectures (
-    user_id INTEGER NOT NULL,
-    lecture_id INTEGER NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(lecture_id) REFERENCES lectures(id)
+  user_id INTEGER NOT NULL,
+  lecture_id INTEGER NOT NULL,
+  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 )
 `);
 
 setupUsersLecturesTable.run();
 
+// Users
+app.post("/api/users", async (req, res) => {
+  console.log(req.body);
+  const insertDataQuery = prepare("INSERT INTO users (username, password, role, class_id) VALUES (?, ?, ?, ?)");
+  const checkUserQuery = prepare("SELECT id FROM users WHERE username = ?");
+  try {
+    if (
+      !req.body.username ||
+      !req.body.password ||
+      !req.body.role ||
+      !req.body.class_id
+    ) {
+      res.status(400).json({ error: "Incomplete data" });
+      return;
+    }
+    const existingUser = checkUserQuery.get(req.body.name);
+  
+    if (existingUser) {
+      res.status(409).json({
+        error: "User with the same name already exists",
+      });
+      return;
+    }
+    const hashedPassword = await hashPassword(req.body.password)
+  
+    insertDataQuery.run(req.body.username, hashedPassword, req.body.role, req.body.class_id);
+    res.json("User data inserted successfully");
+  } catch (error) {
+    res.status(400).json({ error })
+  }
+  
+});
 
+// Roles
+app.post("/api/roles", (req, res) => {
+  const insertDataQuery = prepare("INSERT INTO roles (role) VALUES (?)");
+  if (!req.body.role) {
+    res.status(400).json({ error: "Incomplete data" });
+    return;
+  }
+  insertDataQuery.run(req.body.role);
+  res.json("Role data inserted successfully");
+});
 
+// Classes
+app.post("/api/classes", (req, res) => {
+  const insertDataQuery = prepare("INSERT INTO classes (name) VALUES (?)");
+  if (!req.body.name) {
+    res.status(400).json({ error: "Incomplete data" });
+    return;
+  }
+  insertDataQuery.run(req.body.name);
+  res.json("Class data inserted successfully");
+});
 
+// Room
+app.post("/api/room", (req, res) => {
+  const checkRoomQuery = prepare("SELECT id FROM room WHERE name = ?");
+  const insertDataQuery = prepare("INSERT INTO room (name) VALUES (?)");
+  if (!req.body.name) {
+    res.status(400).json({ error: "Incomplete data" });
+    return;
+  }
+  const existingRoom = checkRoomQuery.get(req.body.name);
+
+  if (existingRoom) {
+    res.status(409).json({
+      error: "Room with the same name already exists",
+      roomId: existingRoom.id,
+    });
+    return;
+  }
+
+  insertDataQuery.run(req.body.name);
+  res.json("Room data inserted successfully");
+});
+
+// Tags
+app.post("/api/tags", (req, res) => {
+  const insertDataQuery = prepare(
+    "INSERT INTO tags (tag_id, room_id) VALUES (?, ?)"
+  );
+  if (!req.body.tag_id || !req.body.room_id) {
+    res.status(400).json({ error: "Incomplete data" });
+    return;
+  }
+  insertDataQuery.run(req.body.tag_id, req.body.room_id);
+  res.json("Tag data inserted successfully");
+});
+
+// Lectures
+app.post("/api/lectures", (req, res) => {
+  const insertDataQuery = prepare(
+    "INSERT INTO lectures (day, start_time, end_time, teacher_id, room_id) VALUES (?, ?, ?, ?, ?)"
+  );
+  if (
+    !req.body.day ||
+    !req.body.start_time ||
+    !req.body.end_time ||
+    !req.body.teacher_id ||
+    !req.body.room_id
+  ) {
+    res.status(400).json({ error: "Incomplete data" });
+    return;
+  }
+  insertDataQuery.run(
+    req.body.day,
+    req.body.start_time,
+    req.body.end_time,
+    req.body.teacher_id,
+    req.body.room_id
+  );
+  res.json("Lecture data inserted successfully");
+});
+
+// Users Lectures
+app.post("/api/users-lectures", (req, res) => {
+  const insertDataQuery = prepare(
+    "INSERT INTO users_lectures (user_id, lecture_id) VALUES (?, ?)"
+  );
+  if (!req.body.user_id || !req.body.lecture_id) {
+    res.status(400).json({ error: "Incomplete data" });
+    return;
+  }
+  insertDataQuery.run(req.body.user_id, req.body.lecture_id);
+  res.json("User-Lecture data inserted successfully");
+});
+
+// Login
+app.post("/api/login", (req, res) => {
+  console.log(req.body);
+  const checkPasswordQuery = prepare("SELECT password FROM users WHERE username = ?");
+  if (!req.body.username || !req.body.password) {
+    res.status(400).json({ error: "Incomplete data" });
+    return;
+  }
+  const existingUser = checkPasswordQuery.get(req.body.username);
+  const hashedPassword = existingUser.password;
+
+  if (!existingUser) {
+    res.status(409).json({
+      error: "User not found!",
+    });
+    return;
+  }
+  const isPasswordMatch = verifyPassword(hashedPassword, req.body.password);
+  if (isPasswordMatch) {
+    res.status(200).json({ error: "Password is correct" });
+    console.log("Password is correct");
+  } else {
+    console.log("Password is incorrect");
+  }
+});
+
+// Route to get all users
 app.get("/api/users", (req, res) => {
   const query = db.prepare("SELECT * FROM users");
   const users = query.all();
   res.json(users);
 });
 
-app.post("/api/users", (req, res) => {
-  console.log(req.body);
-  res.json("Great success");
-  const insertDataQuery = prepare(
-    "INSERT INTO users (name, klass) VALUES (?, ?)"
-  );
-  if (!req.body.name || !req.body.klass)
-  {
-    res.status(400);
-    return;
-  }
-  insertDataQuery.run(req.body.name, req.body.klass);
-  console.log('Cookies: ', req.cookies);
-  console.log('Signed Cookies: ', req.signedCookies);
-});
-
-
-
-
-// app.get("/api/info", (req, res) => {
-//   const query = db.prepare("SELECT * FROM info");
-//   const info = query.all();
-//   res.json(info);
-// });
-
-// app.post("/api/info", (req, res) => {
-//   console.log(req.body);
-//   if (!req.body.name || !req.body.password) {
-//     res.status(400).send("Name, password and class are required!");
-//     return;
-//   }
-  
-//   const insertDataQuery = db.prepare("INSERT INTO info (name, password, klass, isAdmin) VALUES (?, ?, ?, ?)");
-//   insertDataQuery.run(req.body.name, req.body.password, req.body.klass, req.body.isAdmin);
-  
-//   console.log('Cookies: ', req.cookies);
-//   console.log('Signed Cookies: ', req.signedCookies);
-  
-//   res.json("Great success");
-// });
-
 app.listen(port, () => {
-  
   console.log(`Server is running on port ${port}`);
 });
 
 app.use(function (req, res) {
   res.status(404);
 });
-
