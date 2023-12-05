@@ -128,7 +128,9 @@ setupUsersLecturesTable.run();
 // Users
 app.post("/api/users", async (req, res) => {
   console.log(req.body);
-  const insertDataQuery = prepare("INSERT INTO users (username, password, role, class_id) VALUES (?, ?, ?, ?)");
+  const insertDataQuery = prepare(
+    "INSERT INTO users (username, password, role, class_id) VALUES (?, ?, ?, ?)"
+  );
   const checkUserQuery = prepare("SELECT id FROM users WHERE username = ?");
   try {
     if (
@@ -141,21 +143,25 @@ app.post("/api/users", async (req, res) => {
       return;
     }
     const existingUser = checkUserQuery.get(req.body.name);
-  
+
     if (existingUser) {
       res.status(409).json({
         error: "User with the same name already exists",
       });
       return;
     }
-    const hashedPassword = await hashPassword(req.body.password)
-  
-    insertDataQuery.run(req.body.username, hashedPassword, req.body.role, req.body.class_id);
+    const hashedPassword = await hashPassword(req.body.password);
+
+    insertDataQuery.run(
+      req.body.username,
+      hashedPassword,
+      req.body.role,
+      req.body.class_id
+    );
     res.json("User data inserted successfully");
   } catch (error) {
-    res.status(400).json({ error })
+    res.status(400).json({ error });
   }
-  
 });
 
 // Roles
@@ -256,13 +262,19 @@ app.post("/api/users-lectures", (req, res) => {
 // Login
 app.post("/api/login", (req, res) => {
   console.log(req.body);
-  const checkPasswordQuery = prepare("SELECT password FROM users WHERE username = ?");
+  const checkPasswordQuery = prepare(
+    "SELECT password FROM users WHERE username = ?"
+  );
+  const checkRoleQuery = prepare(
+    "SELECT role FROM users WHERE username = ?"
+  );
   if (!req.body.username || !req.body.password) {
     res.status(400).json({ error: "Incomplete data" });
     return;
   }
   const existingUser = checkPasswordQuery.get(req.body.username);
   const hashedPassword = existingUser.password;
+  const userRole = checkRoleQuery.get(req.body.username);
 
   if (!existingUser) {
     res.status(409).json({
@@ -272,11 +284,13 @@ app.post("/api/login", (req, res) => {
   }
   const isPasswordMatch = verifyPassword(hashedPassword, req.body.password);
   if (isPasswordMatch) {
-    res.status(200).json({ error: "Password is correct" });
+    res.status(200).json(userRole);
+    console.log(userRole);
     console.log("Password is correct");
-  } else {
-    console.log("Password is incorrect");
+    return;
   }
+  res.status(409).json({ error: "Password is incorrect" });
+  console.log("Password is incorrect");
 });
 
 // Route to get all users
