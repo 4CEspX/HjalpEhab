@@ -265,12 +265,16 @@ app.post("/api/login", (req, res) => {
   const checkPasswordQuery = prepare(
     "SELECT password FROM users WHERE username = ?"
   );
+  const checkRoleQuery = prepare(
+    "SELECT role FROM users WHERE username = ?"
+  );
   if (!req.body.username || !req.body.password) {
     res.status(400).json({ error: "Incomplete data" });
     return;
   }
   const existingUser = checkPasswordQuery.get(req.body.username);
   const hashedPassword = existingUser.password;
+  const userRole = checkRoleQuery.get(req.body.username);
 
   if (!existingUser) {
     res.status(409).json({
@@ -280,11 +284,12 @@ app.post("/api/login", (req, res) => {
   }
   const isPasswordMatch = verifyPassword(hashedPassword, req.body.password);
   if (isPasswordMatch) {
-    res.status(200).json({ error: "Password is correct" });
+    res.status(200).json(userRole);
+    console.log(userRole);
     console.log("Password is correct");
     return;
   }
-  res.status(200).json({ error: "Password is incorrect" });
+  res.status(409).json({ error: "Password is incorrect" });
   console.log("Password is incorrect");
 });
 
