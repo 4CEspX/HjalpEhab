@@ -21,7 +21,6 @@ function App() {
   return (
     <>
       <div className="appContainer">
-        <h1>hsedkf hsefroilsuesdsefl os fsld.</h1>
         <h1>User List</h1>
         <table className="studentInfo">
           <tr>
