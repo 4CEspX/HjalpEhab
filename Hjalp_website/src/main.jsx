@@ -7,6 +7,7 @@ import "./App.css";
 import Header from "./Header";
 import SideBar from "./SideBar";
 import Students from "./assets/components/students.jsx";
+import Api from "./assets/components/api.jsx";
 
 const Wrapper = () => (
   <>
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/students",
         element: <Students />,
+      },
+      {
+        path: "/api",
+        element: <Api />,
       },
     ],
   },
