@@ -24,13 +24,13 @@ function Api() {
     <>
       <div className="studentsContainer">
         <div className="studentSettings">
-          <h2>Klass: 1Teknik1</h2>
+          <h2>API Output:</h2>
         </div>
         <div className="studentGrid">
           {users.map((user) => (
             <div className="studentCard" key={user.id}>
-              <h3>{user.name}</h3>
-              <p>{user.klass}</p>
+              <h3>{user.username}</h3>
+              <p>{user.class_id}</p>
               <div className="attendanceButtons">
                 <span></span>
                 <span></span>
