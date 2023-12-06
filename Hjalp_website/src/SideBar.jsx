@@ -16,9 +16,6 @@ function SideBar() {
           <Link to="/">Schema</Link>
         </li>
         {/* Link wraps the list item */}
-        <li>
-          <Link to="/attendence">Registrera närvaro</Link>
-        </li>
       </ul>
     </div>
   );

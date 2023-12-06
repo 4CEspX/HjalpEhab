@@ -25,6 +25,7 @@ function Students() {
       <div className="studentsContainer">
         <div className="studentSettings">
           <h2>Klass: 1Teknik1</h2>
+          <button>Redigera</button>
         </div>
         <div className="studentGrid">
           <div className="studentCard">
