@@ -25,6 +25,7 @@ function Api() {
       <div className="studentsContainer">
         <div className="studentSettings">
           <h2>API Output:</h2>
+          <button>Redigera</button>
         </div>
         <div className="studentGrid">
           {users.map((user) => (

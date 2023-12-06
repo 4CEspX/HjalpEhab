@@ -1,30 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import React from "react";
 import "../css/students.css";
 
 function Students() {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    console.log("Helloooooooooooo!");
-    // Make a GET request to the server API
-    axios
-      .get("http://192.168.220.50:3000/api/users")
-      .then((response) => {
-        setUsers(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-
   return (
     <>
       <div className="studentsContainer">
         <div className="studentSettings">
           <h2>Klass: 1Teknik1</h2>
+          <button>Redigera</button>
         </div>
         <div className="studentGrid">
           <div className="studentCard">
