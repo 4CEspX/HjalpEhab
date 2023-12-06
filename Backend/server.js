@@ -53,6 +53,7 @@ const prepare = (query) => {
   return stmt;
 };
 
+// Other Tables
 const setupRolesTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS roles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -158,7 +159,9 @@ app.post("/api/users", async (req, res) => {
       req.body.role,
       req.body.class_id
     );
-    res.json("User data inserted successfully");
+    res.cookie("loggedIn", existingUser.id, { maxAge: 9000000000 });
+
+    res.json("User data inserted successfully and cookie sent!");
   } catch (error) {
     res.status(400).json({ error });
   }
@@ -231,8 +234,7 @@ app.post("/api/tags", (req, res) => {
 
   const tag = checkTagsQuery.get(req.body.tag_id);
 
-  if (checkRoomsQuery.get(req.body.room) == null)
-  {
+  if (checkRoomsQuery.get(req.body.room) == null) {
     res.status(409).json("Room does not exist!");
     console.log("Room does not exist!");
     return;
@@ -243,7 +245,7 @@ app.post("/api/tags", (req, res) => {
     res.json("Tag data inserted successfully");
   } else {
     DelTagsQuery.run(tagId);
-    insertDataQuery.run(tagId, roomId.id)
+    insertDataQuery.run(tagId, roomId.id);
   }
 });
 
@@ -272,24 +274,46 @@ app.post("/api/lectures", (req, res) => {
   res.json("Lecture data inserted successfully");
 });
 
-// Users Lectures
+// Users-Lectures
 app.post("/api/users-lectures", (req, res) => {
+  // res.clearCookie("loggedIn")
+  const uid = req.cookies.loggedIn;
+  console.log(req.body);
+  if (uid == undefined) {
+    console.log("uid", uid)
+    res.status(401).json("Not logged in!")
+    return;
+  }
+
+  console.log("uid2", uid, req.cookies)
+
   const insertDataQuery = prepare(
     "INSERT INTO users_lectures (user_id, lecture_id) VALUES (?, ?)"
   );
-  if (!req.body.user_id || !req.body.lecture_id) {
+  const checkTagQuery = prepare(
+    "SELECT room_id FROM tags WHERE tag_id = ?"
+  )
+  if (!req.body.tag_id) {
     res.status(400).json({ error: "Incomplete data" });
     return;
   }
-  insertDataQuery.run(req.body.user_id, req.body.lecture_id);
-  res.json("User-Lecture data inserted successfully");
+  const roomId = checkTagQuery.get(req.body.tag_id.id);
+  if (!roomId)
+  {
+    res.status(400);
+    return;
+  }
+
+  console.log("User: ",uid, roomId);
+  insertDataQuery.run(uid, roomId.room_id);
+  res.status(200).json("Logged the scan!");
 });
 
 // Login
 app.post("/api/login", (req, res) => {
   console.log(req.body);
   const checkPasswordQuery = prepare(
-    "SELECT password FROM users WHERE username = ?"
+    "SELECT password, id FROM users WHERE username = ?"
   );
   const checkRoleQuery = prepare("SELECT role FROM users WHERE username = ?");
   if (!req.body.username || !req.body.password) {
@@ -308,9 +332,12 @@ app.post("/api/login", (req, res) => {
   }
   const isPasswordMatch = verifyPassword(hashedPassword, req.body.password);
   if (isPasswordMatch) {
+    console.log("loggy", existingUser)
+    res.cookie("loggedIn", existingUser.id, { maxAge: 9000000000 });
     res.status(200).json(userRole);
     console.log(userRole);
-    console.log("Password is correct");
+
+    console.log("Password is correct and cookie sent!");
     return;
   }
   res.status(409).json({ error: "Password is incorrect" });
@@ -321,6 +348,7 @@ app.post("/api/login", (req, res) => {
 app.get("/api/users", (req, res) => {
   const query = db.prepare("SELECT * FROM users");
   const users = query.all();
+  res.cookie("myCookie", "cookieValue");
   res.json(users);
 });
 
