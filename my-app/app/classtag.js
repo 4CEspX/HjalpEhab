@@ -9,9 +9,20 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Button,  } from "react-native";
 import { styles } from './index';
 
- const classTag = () => {
 
-const [classID, setClassID] = useState('');
+NfcManager.start();
+
+ 
+function classTag() {
+
+const [tag, setTag] = useState('');
+const [room, setRoom] = useState('');
+const [error, setError] = useState('');
+
+
+
+
+
 
 
  async function handletagClass ()  {
@@ -20,37 +31,73 @@ const [classID, setClassID] = useState('');
             await NfcManager.requestTechnology(NfcTech.Ndef);
             // the resolved tag object will contain `ndefMessage` property
             const tag = await NfcManager.getTag();
-            setClassID(tag.id);
+            setTag(tag.id);
 
 
-
-            console.log(tag.id);
-            console.log(tag);
-            
-
-            if (tag.id === classID) {
-
-                console.warn("Welcome!", tag.id);
-
-            }
 
         }
         finally {
             NfcManager.cancelTechnologyRequest().catch(() => 0);
         }
-    }
+
+        const requestBody = {
+            room: room,
+            tag_id: tag
+        };
+        
+
+        fetch("http://192.168.220.50:3000/api/tags", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+          })
+          .then(response => {
+            console.log(response.status);
+            
+            if (!response.ok) {
+              Error(`HTTP error! status: ${response.status}`);
+
+            }
+
+
+            if(response.status === 409){
+                setError('room does not exist');
+            }
+            if(response.status === 200){
+                setError('tag added');
+            }
+           
+            return response.json();
+          })
+          .then(data => {
+
+           // setError('tag added');
+
+           
+         
+            
+            
+          })
+        }
+        
+    
 
 
     return (
         <View style={styles.container}>
             <View style={styles.main}>
                 <Text style={styles.title}>Class tag</Text>
-                {/* <TextInput
+                <Text style={styles.subtitle}>Scan the class tag</Text>
+                <TextInput
                     style={styles.input}
-                    placeholder="Class tag"
-                    value={classID}
-                    onChangeText={setClassID}
-                /> */}
+                    placeholder="room name"
+                    value={room}
+                    onChangeText={setRoom}
+                />
+            <Text style={styles.error}>{error}</Text> 
+
                 <TouchableOpacity
                     onPress={handletagClass}
                     

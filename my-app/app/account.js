@@ -7,7 +7,7 @@ import { Link } from "expo-router";
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
 ;
 
-
+import SelectDropdown from "react-native-select-dropdown";
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Button,  } from "react-native";
 import { styles } from './index';
@@ -28,56 +28,48 @@ const account = () => {
 const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [adminer, setAdminer] = useState(0);
+    const [adminer, setAdminer] = useState('');
     const [klass, setKlass] = useState('');
     
-    const handleAdmin = () => {
-        if (adminer === 0) {
-            setAdminer(1);
-            console.log(adminer);
-        } else {
-            setAdminer(0);
-            console.log(adminer);
-        }
-    };
+  const roles = ["student", "teacher", "admin"];
 
     const handleSignup = () => {
         // Create a request body with the user's credentials
         const requestBody = {
-            name: username,
+            username: username,
             password: password,
-            isAdmin: adminer,
-            klass: klass,
+            role: adminer,
+            class_id: klass,
         };
 
-        // Send a POST request to the server
-        // fetch("http://192.168.220.50:3000/api/info", { // Change this to your signup endpoint
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(requestBody)
-        // })
-        //     .then(response => {
-        //         if (!response.ok) {
-        //             throw new Error(`HTTP error! status: ${response.status}`);
-        //         }
-        //         return response.json();
-        //     })
-        //     .then(data => {
-        //         console.log('Response:', data); // Log the response data
-        //         if (data.ok) {
-        //             // Account creation successful, perform any necessary actions
-        //             console.log('Account created successfully');
-        //         } else {
-        //             // Account creation failed, display error message
-        //             setError('Failed to create account');
-        //         }
-        //     })
-        //     .catch(error => {
-        //         // Handle any errors that occurred during the request
-        //         console.error('Error:', error);
-        //     });
+       // Send a POST request to the server
+        fetch("http://192.168.220.50:3000/api/users", { // Change this to your signup endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response:', data); // Log the response data
+                if (data.ok) {
+                    // Account creation successful, perform any necessary actions
+                    console.log('Account created successfully');
+                } else {
+                    // Account creation failed, display error message
+                    setError('Failed to create account');
+                }
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the request
+                console.error('Error:', error);
+            });
     };
 
 
@@ -109,7 +101,19 @@ return (
                     onChangeText={setKlass}
                     
                 />
-                <Button title="Admin?" onPress={handleAdmin} />
+                <SelectDropdown 
+                 style={styles.input}
+                 placeholder="role"
+                 value={adminer}
+                    onSelect={setAdminer}
+                    data={roles}
+                    /> 
+
+
+                  
+
+
+                
                 <Button title="Sign Up" onPress={handleSignup} />
                 {error ? <Text style={styles.error}>{error}</Text> : null}
                
